@@ -5,3 +5,6 @@ session.json
 chats/*
 qr-code.svg
 !chats/.gitkeep
+!mediaSend/.gitkeep
+!media/.gitkeep
+!flow/.gitkeep
