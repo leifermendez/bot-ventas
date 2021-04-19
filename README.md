@@ -1,6 +1,6 @@
 __Antes de iniciar__
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/iCSVcEq17rA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[Ver Video](https://www.youtube.com/embed/iCSVcEq17rA)
 
 Lo primero que debes hacer es asegurarte de tener instalado NODE.
 
