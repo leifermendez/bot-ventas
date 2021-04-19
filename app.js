@@ -67,7 +67,7 @@ const withSession = () => {
 
     client.on('auth_failure', () => {
         spinner.stop();
-        console.log('** Error de autentificacion vuelve a generar el QRCODE (Borrar el archivo session.json) **');
+        console.log('** Error de autentificacion vuelve a generar el QRCODE (Debes Borrar el archivo session.json) **');
     })
 
 
@@ -350,6 +350,8 @@ const readChat = (number, message, step = null) => new Promise((resolve, reject)
 const generateImage = (base64) => {
     let qr_svg = qr.image(base64, { type: 'svg', margin: 4 });
     qr_svg.pipe(require('fs').createWriteStream('qr-code.svg'));
+    console.log(`${chalk.blueBright('⚡ Recuerda que el QR se actualiza cada minuto ⚡')}`);
+    console.log(`${chalk.blueBright('⚡ Actualiza F5 el navegador para mantener el mejor QR⚡')}`);
     console.log('http://localhost:9000/qr');
 }
 
