@@ -1,0 +1,65 @@
+{
+    "muebles": {
+        "label": " ** Muebles **!!",
+        "main_image": "close-1.webp",
+        "main_message": [
+            "Si quieres ver más muebles marca (1)"
+        ],
+        "list": [
+            {
+                "message": [
+                    "Mueble #1"
+                ],
+                "image": "close-2.webp"
+            },
+            {
+                "message": [
+                    "Mueble #1"
+                ],
+                "image": "close-2.webp"
+            }
+        ]
+    },
+    "celulares": {
+        "label": " ** Celulares **!!",
+        "main_image": "iphone-1.jpg",
+        "main_message": [
+            "Si quieres ver más celulares marca (2)"
+        ],
+        "list": [
+            {
+                "message": [
+                    "Iphone X"
+                ],
+                "image": "iphone-1.jpg"
+            },
+            {
+                "message": [
+                    "Iphone X parte trasera"
+                ],
+                "image": "iphone-2.jpg"
+            }
+        ]
+    },
+    "ropa": {
+        "label": " ** ROPA **!!",
+        "main_image": "abrigo-main.jpg",
+        "main_message": [
+            "Aqui puedes conseguir muchos productos"
+        ],
+        "list": [
+            {
+                "message": [
+                    "Este abrigo es muy bueno"
+                ],
+                "image": "abrigo-1.jpg"
+            },
+            {
+                "message": [
+                    "Este otro es fantastico abrigo es muy bueno"
+                ],
+                "image": "abrigo-2.jpg"
+            }
+        ]
+    }
+}
