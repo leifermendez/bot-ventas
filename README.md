@@ -1,6 +1,6 @@
 __Antes de iniciar__
 
-[Ver Video](https://www.youtube.com/embed/iCSVcEq17rA)
+[Ver Video](https://www.youtube.com/watch?v=iCSVcEq17rA)
 
 Lo primero que debes hacer es asegurarte de tener instalado NODE.
 
