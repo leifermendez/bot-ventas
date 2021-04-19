@@ -4,3 +4,4 @@ session.json
 
 chats/*
 qr-code.svg
+!chats/.gitkeep
