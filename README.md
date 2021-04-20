@@ -15,6 +15,10 @@ http://localhost:9000/qr
 
 Una vez escaneado y vinculada tu cuenta de Whatsapp puedes empezara  probar el BOT
 
+__Steps__
+En los archivos ` .json` donde se encuentran las palabras claves deben estar en __minuscula__ no importa si el usuario la escribe en otro 
+formato ya que el script se encarga de interpretarlas en minusculas.
+
 __Formatos de Mensaje__
 `\n` Salto de linea
 `*PALABRA*` Negrito

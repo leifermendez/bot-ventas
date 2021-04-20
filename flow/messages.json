@@ -26,6 +26,32 @@
         "Fue un placer hablar contigo ",
         "Si necesitas algo más no dudes en contactarme"
     ],
+    "STEP_5": [
+        "Cual es tu nombre?"
+    ],
+    "STEP_5_1": [
+        "Que producto necesitas?"
+    ],
+    "STEP_5_2": [
+        "Tu forma de pago cual es: crédito? credicontado? contado?"
+    ],
+    "STEP_5_3": [
+        "¿De que municipio eres?"
+    ],
+    "STEP_5_4": [
+        "Tus datos son \n",
+        "Nombre: *%NAME%* \n",
+        "Municipio: *%LOCATION%* \n",
+        "estas interesado en un *%PRODUCT%* \n",
+        "y lo quieres comprar a *%METHOD%* \n",
+        "Esta informacion es correct? "
+    ],
+    "STEP_5_5": [
+        "Esta informacion es correcta? De ser correcta responde *SI* de lo contrario *Hacer pedido*"
+    ],
+    "STEP_5_6": [
+        "Ok perfecto muy pronto un asesor lo estará contactando"
+    ],
     "ERROR": [
         "Ups lo siento no puedo comprenderte"
     ]
