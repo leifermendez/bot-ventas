@@ -1,6 +1,7 @@
 /**
  * ⚡⚡⚡ DECLARAMOS LAS LIBRERIAS y CONSTANTES A USAR! ⚡⚡⚡
  */
+require('dotenv').config()
 const fs = require('fs');
 const express = require('express');
 const moment = require('moment');
@@ -10,6 +11,7 @@ const ExcelJS = require('exceljs');
 const qrcode = require('qrcode-terminal');
 const qr = require('qr-image');
 const { Client, MessageMedia } = require('whatsapp-web.js');
+const mail = require('./mail')
 const flow = require('./flow/steps.json')
 const messages = require('./flow/messages.json')
 const vendors = require('./flow/vendor.json')
@@ -42,6 +44,16 @@ const sendMessage = (number = null, text = null) => {
     const message = text;
     client.sendMessage(number, message);
     console.log(`${chalk.red('⚡⚡⚡ Enviando mensajes....')}`);
+}
+
+/**
+ * Clear number
+ */
+
+const clearNumber = (number) => {
+    number = number.replace('@c.us', '');
+    number = `${number}`
+    return number;
 }
 
 /**
@@ -316,7 +328,6 @@ const connectionReady = () => {
             const vendorFind = vendors[insideText] || null;
 
             if (vendorFind) {
-                sendMessage(from, vendorFind.join(''))
                 const step5_4 = messages.STEP_5_4.join('')
                 const step5_5 = messages.STEP_5_5.join('')
                 let messageStep5_4 = step5_4;
@@ -345,6 +356,21 @@ const connectionReady = () => {
             if (flow.STEP_5_5.includes(body)) {
                 const step5_6 = messages.STEP_5_6.join('')
                 sendMessage(from, step5_6)
+
+                const step5_7 = messages.STEP_5_7.join('')
+                let messageStep5_7 = step5_7;
+                const userName = await handleExcel(from, 'STEP_5_2');
+                const userLocation = await handleExcel(from, 'STEP_5_5');
+                const userProduct = await handleExcel(from, 'STEP_5_3');
+                const userMethodPay = await handleExcel(from, 'STEP_5_4');
+
+                messageStep5_7 = messageStep5_7.replace('%NAME%', userName.value)
+                messageStep5_7 = messageStep5_7.replace('%LOCATION%', userLocation.value)
+                messageStep5_7 = messageStep5_7.replace('%PRODUCT%', userProduct.value)
+                messageStep5_7 = messageStep5_7.replace('%METHOD%', userMethodPay.value)
+                messageStep5_7 = messageStep5_7.replace('%USERPHONE%', clearNumber(from))
+
+                mail.sendMail(messageStep5_7)
                 await readChat(from, body)
             } else {
                 sendMessage(from, messages.ERROR.join(''))

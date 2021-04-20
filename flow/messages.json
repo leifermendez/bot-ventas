@@ -52,6 +52,14 @@
     "STEP_5_6": [
         "Ok perfecto muy pronto un asesor lo estará contactando"
     ],
+    "STEP_5_7": [
+        "Nuevo cliente sus datos son \n",
+        "Nombre: %NAME% \n",
+        "Municipio: %LOCATION% \n",
+        "estas interesado en un %PRODUCT% \n",
+        "y lo quieres comprar a %METHOD% \n \n",
+        "Su numero de contacto es %USERPHONE%"
+    ],
     "ERROR": [
         "Ups lo siento no puedo comprenderte"
     ]
