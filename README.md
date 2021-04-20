@@ -19,6 +19,18 @@ __Steps__
 En los archivos ` .json` donde se encuentran las palabras claves deben estar en __minuscula__ no importa si el usuario la escribe en otro 
 formato ya que el script se encarga de interpretarlas en minusculas.
 
+__Envio de MAIL__
+Debes te crear un archivo llamado `.env` el cual debe de tener las siguientes variables
+```
+MAIL_PORT=2525
+MAIL_SMTP=smtp.mailtrap.io
+MAIL_USER=XXXXXXXXXXXXX
+MAIL_PASS=XXXXXXXXXXXX
+MAIL_CLIENT=email_donde_recibes@test.com
+MAIL_FROM=hola@hola.com
+MAIL_SUBJECT=Cliente interesado
+```
+
 __Formatos de Mensaje__
 `\n` Salto de linea
 `*PALABRA*` Negrito

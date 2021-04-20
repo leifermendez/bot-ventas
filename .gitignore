@@ -8,3 +8,4 @@ qr-code.svg
 !mediaSend/.gitkeep
 !media/.gitkeep
 !flow/.gitkeep
+.env
