@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@sendgrid/mail": "^7.4.2",
     "chalk": "^4.1.0",
     "dotenv": "^8.2.0",
     "excel4node": "^1.7.2",

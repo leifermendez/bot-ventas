@@ -31,6 +31,8 @@ MAIL_PASS=XXXXXXXXXXXX
 MAIL_CLIENT=email_donde_recibes@test.com
 MAIL_FROM=hola@hola.com
 MAIL_SUBJECT=Cliente interesado
+MAIL_TRANSPORT=sendgrid o smtp
+SENDGRID_API_KEY=XXXXXXXXXXXXXXXXXXXXXXX
 ```
 
 __Formatos de Mensaje__
