@@ -19,8 +19,9 @@ const sendMail = async (dataMail) => {
         }
     });
 
+
     const info = await transporter.sendMail(mailOptions);
-    console.log("Message sent: %s", info.messageId);
+    console.log("Message sent: %s", info.messageId, process.env.MAIL_FROM);
 
 }
 
