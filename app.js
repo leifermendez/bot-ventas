@@ -27,24 +27,26 @@ let sessionData;
  * @param {*} number 
  * @param {*} fileName 
  */
-const sendMedia = (number, fileName, text = null) => {
+const sendMedia = (number, fileName, text = null) => new Promise((resolve, reject) => {
     number = number.replace('@c.us', '');
     number = `${number}@c.us`
     const media = MessageMedia.fromFilePath(`./mediaSend/${fileName}`);
-    client.sendMessage(number, media, { caption: text || null });
-}
+    const msg = client.sendMessage(number, media, { caption: text || null });
+    resolve(msg)
+})
 
 /**
  * Enviamos un mensaje simple (texto) a nuestro cliente
  * @param {*} number 
  */
-const sendMessage = (number = null, text = null) => {
+const sendMessage = (number = null, text = null) => new Promise((resolve, reject) => {
     number = number.replace('@c.us', '');
     number = `${number}@c.us`
     const message = text;
-    client.sendMessage(number, message);
+    const msg = client.sendMessage(number, message);
     console.log(`${chalk.red('⚡⚡⚡ Enviando mensajes....')}`);
-}
+    resolve(msg)
+})
 
 /**
  * Clear number
@@ -209,7 +211,7 @@ const connectionReady = () => {
 
             if (productFind) {
 
-                sendMedia(
+                await sendMedia(
                     from,
                     productFind.main_image,
                     productFind.main_message.join('')
@@ -248,16 +250,17 @@ const connectionReady = () => {
             if (productFind) {
                 const getAllitems = productFind.list;
 
-                getAllitems.forEach(itemSend => {
-                    sendMedia(
+                const listQueue = getAllitems.map(itemSend => {
+                    return sendMedia(
                         from,
                         itemSend.image,
                         itemSend.message.join('')
                     )
-
                 })
 
-                sendMessage(from, messages.STEP_2_2.join(''))
+                Promise.all(listQueue).then(() => {
+                    sendMessage(from, messages.STEP_2_2.join(''))
+                })
 
                 await readChat(from, body)
             } else {
@@ -321,34 +324,21 @@ const connectionReady = () => {
         /* Seguimos el flujo de los asesores */
         if (step && step.includes('STEP_5_4')) {
 
-            /**
-             * Buscar asesor en json
-             */
-            const insideText = body.toLowerCase();
-            const vendorFind = vendors[insideText] || null;
+            const step5_4 = messages.STEP_5_4.join('')
+            const step5_5 = messages.STEP_5_5.join('')
+            let messageStep5_4 = step5_4;
+            const userName = await handleExcel(from, 'STEP_5_2');
+            const userProduct = await handleExcel(from, 'STEP_5_3');
+            const userMethodPay = await handleExcel(from, 'STEP_5_4');
 
-            if (vendorFind) {
-                const step5_4 = messages.STEP_5_4.join('')
-                const step5_5 = messages.STEP_5_5.join('')
-                let messageStep5_4 = step5_4;
-                const userName = await handleExcel(from, 'STEP_5_2');
-                const userLocation = await handleExcel(from, 'STEP_5_5');
-                const userProduct = await handleExcel(from, 'STEP_5_3');
-                const userMethodPay = await handleExcel(from, 'STEP_5_4');
+            messageStep5_4 = messageStep5_4.replace('%NAME%', userName.value || '')
+            messageStep5_4 = messageStep5_4.replace('%LOCATION%', body || '')
+            messageStep5_4 = messageStep5_4.replace('%PRODUCT%', userProduct.value || '')
+            messageStep5_4 = messageStep5_4.replace('%METHOD%', userMethodPay.value || '')
 
-                messageStep5_4 = messageStep5_4.replace('%NAME%', userName.value)
-                messageStep5_4 = messageStep5_4.replace('%LOCATION%', userLocation.value)
-                messageStep5_4 = messageStep5_4.replace('%PRODUCT%', userProduct.value)
-                messageStep5_4 = messageStep5_4.replace('%METHOD%', userMethodPay.value)
-
-                sendMessage(from, messageStep5_4)
-                sendMessage(from, step5_5)
-                await readChat(from, body, 'STEP_5_5')
-                return
-            } else {
-                sendMessage(from, messages.STEP_3_1.join(''))
-                await readChat(from, body)
-            }
+            sendMessage(from, messageStep5_4)
+            sendMessage(from, step5_5)
+            await readChat(from, body, 'STEP_5_5')
             return
         }
 
