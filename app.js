@@ -67,7 +67,12 @@ const withSession = () => {
     sessionData = require(SESSION_FILE_PATH);
     spinner.start();
     client = new Client({
-        session: sessionData
+        session: sessionData,
+        puppeteer: {
+            args: [
+                '--no-sandbox'
+            ],
+        }
     });
 
     client.on('ready', () => {
@@ -95,7 +100,13 @@ const withOutSession = () => {
 
     console.log(`${chalk.greenBright('🔴🔴 No tenemos session guardada, espera que se generar el QR CODE 🔴🔴')}`);
 
-    client = new Client();
+    client = new Client({
+        puppeteer: {
+            args: [
+                '--no-sandbox'
+            ],
+        }
+    });
     client.on('qr', qr => {
         qrcode.generate(qr, { small: true });
         generateImage(qr)
