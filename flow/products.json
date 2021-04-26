@@ -1,44 +1,85 @@
 {
-    "muebles": {
-        "label": " ** Muebles **!!",
+    "laptop": {
+        "label": " *Laptop* \n",
         "main_images": [
             {
                 "message": [
-                    "Mueble #1"
+                    "*(1)* MSI Laptop Creator "
                 ],
-                "image": "close-1.webp"
+                "image": "laptop-1.jpg"
             },
             {
                 "message": [
-                    "Mueble #2"
+                    "*(2)* ASUS Vivobook "
                 ],
-                "image": "close-1.webp"
+                "image": "laptop-2.jpg"
             }
         ],
         "main_message": [
-            "Si quieres ver más muebles marca (1)"
+            "Marca el número para obtener más infocamación del producto"
         ],
         "list": [
             {
                 "message": [
-                    "(Child) Mueble #1"
+                    "MSI Laptop Creator 17 A10SGS-252 \n",
+                    "Intel Core i7 10th Gen 10875H (2.30 GHz) 32 GB Memory 2 TB \n",
+                    " NVMe SSD NVIDIA GeForce RTX 2080 Super Max-Q 17.3 \n",
+                    "*Precio $3,468.00*"
                 ],
-                "image": "close-2.webp",
+                "image": "laptop-1.jpg",
                 "opt": 1
             },
             {
                 "message": [
-                    "(Child) Mueble #2"
+                    "ASUS Vivobook X712DA-202.MV \n",
+                    "Home and Business Laptop \n",
+                    "(AMD Ryzen 7 3700U 4-Core, 12GB RAM, 512GB SSD, 17.3 \n",
+                    "*Precio $719.97*"
                 ],
-                "image": "close-2.webp",
+                "image": "laptop-2.jpg",
                 "opt": 2
+            }
+        ]
+    },
+    "pc": {
+        "label": " *pc* \n",
+        "main_images": [
+            {
+                "message": [
+                    "*(1)* iBUYPOWER Slate 4 163A "
+                ],
+                "image": "pc-1.jpg"
             },
             {
                 "message": [
-                    "(Child) Mueble #3"
+                    "*(2)* ASUS ROG Strix G15CK "
                 ],
-                "image": "close-2.webp",
-                "opt": 3
+                "image": "pc-2.jpg"
+            }
+        ],
+        "main_message": [
+            "Marca el número para obtener más infocamación del producto"
+        ],
+        "list": [
+            {
+                "message": [
+                    "iBUYPOWER Slate 4 163A - AMD Ryzen 5 3600 - Radeon RX 580 \n",
+                    "16 GB DDR4 - 1 TB HDD - 240 GB SATA SSD - Windows 10 \n",
+                    "Home - Gaming Desktop \n",
+                    "*Precio $1,099.99*"
+                ],
+                "image": "pc-1.jpg",
+                "opt": 1
+            },
+            {
+                "message": [
+                    "ASUS ROG Strix G15CK Gaming Desktop PC, Intel Core i5-10400F \n",
+                    "GeForce GTX 1660 SUPER, 8 GB DDR4 RAM, 512 GB SSD \n",
+                    "Wi-Fi 6, Windows 10 Home, Star Black, G15CK-BS562 \n",
+                    "*Precio $999.00*"
+                ],
+                "image": "pc-2.jpg",
+                "opt": 2
             }
         ]
     }

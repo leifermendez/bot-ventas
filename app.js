@@ -269,7 +269,7 @@ const connectionReady = () => {
             const findChild = productFind.list.find(a => parseInt(body) === a.opt)
 
             if (findChild) {
-                return sendMedia(
+                sendMedia(
                     from,
                     findChild.image,
                     findChild.message.join('')
