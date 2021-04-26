@@ -222,11 +222,19 @@ const connectionReady = () => {
 
             if (productFind) {
 
-                await sendMedia(
-                    from,
-                    productFind.main_image,
-                    productFind.main_message.join('')
-                )
+                const getAllitems = productFind.main_images;
+
+                const listQueue = getAllitems.map(itemSend => {
+                    return sendMedia(
+                        from,
+                        itemSend.image,
+                        itemSend.message.join('')
+                    )
+                })
+
+                Promise.all(listQueue).then(() => {
+                    sendMessage(from, productFind.main_message.join(''))
+                })
 
                 const stepProduct = `STEP_2_ITEM_${insideText}`.toUpperCase();
                 await readChat(from, body, stepProduct)
@@ -248,6 +256,7 @@ const connectionReady = () => {
 
             let getItem = step.split('STEP_2_ITEM_')
             getItem = getItem.reverse()[0] || null
+
             const nameItem = getItem.toLowerCase();
             const productFind = products[nameItem] || null;
 
@@ -257,21 +266,14 @@ const connectionReady = () => {
                 return
             }
 
+            const findChild = productFind.list.find(a => parseInt(body) === a.opt)
 
-            if (productFind) {
-                const getAllitems = productFind.list;
-
-                const listQueue = getAllitems.map(itemSend => {
-                    return sendMedia(
-                        from,
-                        itemSend.image,
-                        itemSend.message.join('')
-                    )
-                })
-
-                Promise.all(listQueue).then(() => {
-                    sendMessage(from, messages.STEP_2_2.join(''))
-                })
+            if (findChild) {
+                return sendMedia(
+                    from,
+                    findChild.image,
+                    findChild.message.join('')
+                )
 
                 await readChat(from, body)
             } else {
