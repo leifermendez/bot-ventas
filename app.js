@@ -266,14 +266,18 @@ const connectionReady = () => {
                 return
             }
 
+
             const findChild = productFind.list.find(a => parseInt(body) === a.opt)
 
             if (findChild) {
-                sendMedia(
+
+                await sendMedia(
                     from,
                     findChild.image,
                     findChild.message.join('')
                 )
+
+                sendMessage(from, messages.STEP_2_3.join(''))
 
                 await readChat(from, body)
             } else {
