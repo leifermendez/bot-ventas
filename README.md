@@ -24,15 +24,14 @@ formato ya que el script se encarga de interpretarlas en minusculas.
 __Envio de MAIL__
 Debes te crear un archivo llamado `.env` el cual debe de tener las siguientes variables
 ```
-MAIL_PORT=2525
-MAIL_SMTP=smtp.mailtrap.io
-MAIL_USER=XXXXXXXXXXXXX
-MAIL_PASS=XXXXXXXXXXXX
-MAIL_CLIENT=email_donde_recibes@test.com
-MAIL_FROM=hola@hola.com
+MAIL_PORT=465
+MAIL_SMTP=smtp.gmail.com
+MAIL_USER=tumail@gmail.com
+MAIL_PASS=TU_CONTRASEÑA_GENERADA
+MAIL_CLIENT=email_donde_quieres_recibir@mail.com
+MAIL_FROM=tumail@gmail.com
 MAIL_SUBJECT=Cliente interesado
-MAIL_TRANSPORT=sendgrid o smtp
-SENDGRID_API_KEY=XXXXXXXXXXXXXXXXXXXXXXX
+MAIL_TRANSPORT=smtp
 ```
 
 __Formatos de Mensaje__
