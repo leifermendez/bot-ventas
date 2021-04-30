@@ -426,18 +426,23 @@ const readChat = (number, message, step = null) => new Promise((resolve, reject)
                     }
 
                     getRowInsert.commit();
-                    workbook.xlsx.writeFile(pathExcel);
+                    workbook.xlsx.writeFile(pathExcel)
+                        .then(() => {
+                            const getRowPrevStep = worksheet.getRow(lastRow.number);
+                            const lastStep = getRowPrevStep.getCell('C').value
+                            resolve(lastStep)
+                        })
+                        .catch((err) => {
+                            console.log('ERR', err);
+                            reject('error')
+                        })
 
-                    const getRowPrevStep = worksheet.getRow(lastRow.number);
-                    const lastStep = getRowPrevStep.getCell('C').value
-                    resolve(lastStep)
+
                 })
                 .catch((err) => {
                     console.log('ERR', err);
                     reject('error')
                 })
-
-
 
         } else {
             /**
