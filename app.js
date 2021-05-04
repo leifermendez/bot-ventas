@@ -241,7 +241,7 @@ const connectionReady = () => {
 
             } else {
                 sendMessage(from, messages.STEP_2_1.join(''))
-                await readChat(from, body)
+                await readChat(from, body, 'STEP_2_1')
             }
             return
         }
