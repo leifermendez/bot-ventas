@@ -1,0 +1,20 @@
+{
+  "sabanas": {
+    "label": " *(1)* Sabanas \n"
+  },
+  "armarios": {
+    "label": " *(2)* Armarios \n"
+  },
+  "electrodomesticos": {
+    "label": " *(3)* Electrodomesticos \n"
+  },
+  "muebles": {
+    "label": " *(4)* Muebles \n"
+  },
+  "colchones": {
+    "label": " *(5)* Colchones \n"
+  },
+  "camas": {
+    "label": " *(6)* Camas \n"
+  }
+}

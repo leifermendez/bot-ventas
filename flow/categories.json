@@ -1,0 +1,34 @@
+{
+  "list": [
+    {
+      "label": 1,
+      "id": "9",
+      "name": "HOGAR"
+    },
+    {
+      "label": 2,
+      "id": "10",
+      "name": "ARMARIOS"
+    },
+    {
+      "label": 3,
+      "id": "11",
+      "name": "ELECTRODOMESTICOS"
+    },
+    {
+      "label": 4,
+      "id": "12",
+      "name": "MUBLES"
+    },
+    {
+      "label": 5,
+      "id": "13",
+      "name": "COLCHONES"
+    },
+    {
+      "label": 6,
+      "id": "15",
+      "name": "CAMAS"
+    }
+  ]
+}

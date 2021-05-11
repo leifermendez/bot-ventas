@@ -16,6 +16,9 @@ const flow = require('./flow/steps.json')
 const messages = require('./flow/messages.json')
 const vendors = require('./flow/vendor.json')
 const products = require('./flow/products.json')
+const categories = require('./flow/categories.json')
+const categoriesLabel = require('./flow/categoriesLabel.json')
+const axios = require('axios');
 const app = express();
 app.use(express.urlencoded({ extended: true }))
 const SESSION_FILE_PATH = './session.json';
@@ -144,6 +147,7 @@ const connectionReady = () => {
         // handleExcel(from)
         let step = await readChat(from, body)
         body = body.toLowerCase();
+        body = body.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
         /***************************** Preguntas ******************************** */
 
         if (flow.STEP_1.includes(body)) {
@@ -164,13 +168,14 @@ const connectionReady = () => {
              * Aqui respondemos los prodcutos
             */
             const step2 = messages.STEP_2.join('')
-
-            const parseLabel = Object.keys(products).map(o => {
-                return products[o]['label'];
+            const stepCat = messages.STEP_CATEGORIE.join('')
+            const parseLabel = Object.keys(categoriesLabel).map(o => {
+                return categoriesLabel[o]['label'];
             }).join('')
 
             sendMessage(from, step2)
             sendMessage(from, parseLabel)
+            sendMessage(from, stepCat)
             await readChat(from, body, 'STEP_2_1')
             return
         }
@@ -214,37 +219,80 @@ const connectionReady = () => {
         /* Seguimos el flujo de los productos */
         if (step && step.includes('STEP_2_1')) {
 
-            /**
-             * Buscar prodcuto en json
-             */
-            const insideText = body.toLowerCase();
-            const productFind = products[insideText] || null;
-
-            if (productFind) {
-
-                const getAllitems = productFind.main_images;
-
-                const listQueue = getAllitems.map(itemSend => {
-                    return sendMedia(
-                        from,
-                        itemSend.image,
-                        itemSend.message.join('')
-                    )
-                })
-
-                Promise.all(listQueue).then(() => {
-                    sendMessage(from, productFind.main_message.join(''))
-                })
-
-                const stepProduct = `STEP_2_ITEM_${insideText}`.toUpperCase();
-                await readChat(from, body, stepProduct)
-
-            } else {
+            if (isNaN(parseInt(body)) || parseInt(body) == 0 || parseInt(body) > 6) {
                 sendMessage(from, messages.STEP_2_1.join(''))
-                await readChat(from, body, 'STEP_2_1')
+                await readChat(from, body)
+                return
             }
+
+            const findChild = categories.list.find(catagorie => catagorie.label === parseInt(body));
+            if (!findChild) {
+                sendMessage(from, messages.STEP_2_1.join(''));
+                await readChat(from, body, 'STEP_2_1');
+                return;
+            }
+
+            let idCategorie = findChild.id;
+            sendMessage(from, messages.WAITING.join(''));
+            const data = await CategoryById(idCategorie);
+            data.forEach(product => {
+                const step_data = messages.DATA_PRODUCTS.join('');
+                let message_data = step_data;
+                //El Nombre de la imagen es el id de la categoria mas el id del prodcuto
+                let image = `${idCategorie}_${product.Id}.jpg`;
+                message_data = message_data.replace('%NAME%', product.NombreProducto);
+                message_data = message_data.replace('%DESCRIPTION%', product.Descripcion);
+                message_data = message_data.replace('%PRICE%', product.PrecioVenta);
+                // 
+                //Total imagenes 77
+                /**
+                 * Por el momento solo se envia el mensage
+                 *  con el nombre, descripción y precio del producto.
+                 * la funcion sendMedia esta comentada por el momento no hay imagenes,
+                 * solo tiene imagen las categoria camas 
+                 */
+                // sendMedia(from, image, message_data);
+                sendMessage(from, message_data);
+
+            });
+            sendMessage(from, messages.STEP_2_3.join(''))
             return
+
+
         }
+        // if (step && step.includes('STEP_2_1')) {
+
+        //     /**
+        //      * Buscar prodcuto en json
+        //      */
+        //     const insideText = body.toLowerCase();
+        //     const productFind = products[insideText] || null;
+
+        //     if (productFind) {
+
+        //         const getAllitems = productFind.main_images;
+
+        //         const listQueue = getAllitems.map(itemSend => {
+        //             return sendMedia(
+        //                 from,
+        //                 itemSend.image,
+        //                 itemSend.message.join('')
+        //             )
+        //         })
+
+        //         Promise.all(listQueue).then(() => {
+        //             sendMessage(from, productFind.main_message.join(''))
+        //         })
+
+        //         const stepProduct = `STEP_2_ITEM_${insideText}`.toUpperCase();
+        //         await readChat(from, body, stepProduct)
+
+        //     } else {
+        //         sendMessage(from, messages.STEP_2_1.join(''))
+        //         await readChat(from, body, 'STEP_2_1')
+        //     }
+        //     return
+        // }
 
         /** Seguimos mostrandole mas imagenes del producto */
 
@@ -352,6 +400,7 @@ const connectionReady = () => {
             messageStep5_4 = messageStep5_4.replace('%LOCATION%', body || '')
             messageStep5_4 = messageStep5_4.replace('%PRODUCT%', userProduct.value || '')
             messageStep5_4 = messageStep5_4.replace('%METHOD%', userMethodPay.value || '')
+            messageStep5_4 = messageStep5_4.replace('%USERPHONE%', clearNumber(from))
 
             sendMessage(from, messageStep5_4)
             sendMessage(from, step5_5)
@@ -393,6 +442,15 @@ const connectionReady = () => {
     });
 
 }
+const CategoryById = (id) => new Promise((resolve, reject) => {
+
+    axios.get(`${process.env.BASE_URL}/ByCategoryId/${id}`)
+        .then((result) => {
+            resolve(result.data);
+        }).catch((err) => {
+            reject(err);
+        });
+});
 
 /**
  * Guardar historial de conversacion
