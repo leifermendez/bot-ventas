@@ -16,8 +16,6 @@ const flow = require('./flow/steps.json')
 const messages = require('./flow/messages.json')
 const vendors = require('./flow/vendor.json')
 const products = require('./flow/products.json')
-const categories = require('./flow/categories.json')
-const categoriesLabel = require('./flow/categoriesLabel.json')
 const axios = require('axios');
 const app = express();
 app.use(express.urlencoded({ extended: true }))
@@ -167,18 +165,41 @@ const connectionReady = () => {
             /**
              * Aqui respondemos los prodcutos
             */
-            const step2 = messages.STEP_2.join('')
-            const stepCat = messages.STEP_CATEGORIE.join('')
-            const parseLabel = Object.keys(categoriesLabel).map(o => {
-                return categoriesLabel[o]['label'];
-            }).join('')
-
-            sendMessage(from, step2)
-            sendMessage(from, parseLabel)
-            sendMessage(from, stepCat)
-            await readChat(from, body, 'STEP_2_1')
+            sendMessage(from, messages.WAITING.join(''));
+            const data = await getCategories();
+            const step2 = messages.STEP_2.join('');
+            const stepCat = messages.STEP_CATEGORIE.join('');
+            sendMessage(from, step2);
+            data.forEach(d => {
+                const step_data = messages.DATA_CATEGORIE.join('');
+                let message_data = step_data;
+                message_data = message_data.replace('%ID%', d.Id);
+                message_data = message_data.replace('%DESCRIPTION%', d.Descripcion);
+                return sendMessage(from, message_data);
+            });
+            sendMessage(from, stepCat);
+            await readChat(from, body, 'STEP_2_1');
             return
         }
+
+        // if (flow.STEP_2.includes(body)) {
+
+        //     /**
+        //      * Aqui respondemos los prodcutos
+        //     */
+        //     const step2 = messages.STEP_2.join('')
+        //     const stepCat = messages.STEP_CATEGORIE.join('')
+
+        //     const parseLabel = Object.keys(products).map(o => {
+        //         return products[o]['label'];
+        //     }).join('')
+
+        //     sendMessage(from, step2)
+        //     sendMessage(from, parseLabel)
+        //     sendMessage(from, stepCat)
+        //     await readChat(from, body, 'STEP_2_1')
+        //     return
+        // }
 
         if (flow.STEP_3.includes(body)) {
             /**
@@ -219,23 +240,29 @@ const connectionReady = () => {
         /* Seguimos el flujo de los productos */
         if (step && step.includes('STEP_2_1')) {
 
-            if (isNaN(parseInt(body)) || parseInt(body) == 0 || parseInt(body) > 6) {
+            if (isNaN(parseInt(body))) {
                 sendMessage(from, messages.STEP_2_1.join(''))
-                await readChat(from, body)
+                await readChat(from, body, 'STEP_2_1')
                 return
             }
+            let idCategorie = body;
 
-            const findChild = categories.list.find(catagorie => catagorie.label === parseInt(body));
-            if (!findChild) {
+            const data = await CategoryById(idCategorie);
+
+            if (data.length === 0) {
                 sendMessage(from, messages.STEP_2_1.join(''));
                 await readChat(from, body, 'STEP_2_1');
                 return;
             }
-
-            let idCategorie = findChild.id;
-            sendMessage(from, messages.WAITING.join(''));
-            const data = await CategoryById(idCategorie);
-            data.forEach(product => {
+            //Total imagenes 77
+            /**
+                 * Por el momento solo se envia el mensage
+                *  con el nombre, descripción y precio del producto.
+                * la funcion sendMedia esta comentada por el momento porque no hay imagenes,
+                * solo tiene imagenes de prueba las categoria camas 
+                */
+            // sendMessage(from, messages.WAITING.join(''));
+            const listQueue = data.map(product => {
                 const step_data = messages.DATA_PRODUCTS.join('');
                 let message_data = step_data;
                 //El Nombre de la imagen es el id de la categoria mas el id del prodcuto
@@ -243,19 +270,13 @@ const connectionReady = () => {
                 message_data = message_data.replace('%NAME%', product.NombreProducto);
                 message_data = message_data.replace('%DESCRIPTION%', product.Descripcion);
                 message_data = message_data.replace('%PRICE%', product.PrecioVenta);
-                // 
-                //Total imagenes 77
-                /**
-                 * Por el momento solo se envia el mensage
-                 *  con el nombre, descripción y precio del producto.
-                 * la funcion sendMedia esta comentada por el momento no hay imagenes,
-                 * solo tiene imagen las categoria camas 
-                 */
-                // sendMedia(from, image, message_data);
-                sendMessage(from, message_data);
+                // return sendMedia(from, image, message_data);
+                return sendMessage(from, message_data);
+            })
 
-            });
-            sendMessage(from, messages.STEP_2_3.join(''))
+            Promise.all(listQueue).then(() => {
+                sendMessage(from, messages.STEP_2_3.join(''))
+            })
             return
 
 
@@ -445,6 +466,14 @@ const connectionReady = () => {
 const CategoryById = (id) => new Promise((resolve, reject) => {
 
     axios.get(`${process.env.BASE_URL}/ByCategoryId/${id}`)
+        .then((result) => {
+            resolve(result.data);
+        }).catch((err) => {
+            reject(err);
+        });
+});
+const getCategories = () => new Promise((resolve, reject) => {
+    axios.get(`${process.env.BASE_URL}/GetCategory`)
         .then((result) => {
             resolve(result.data);
         }).catch((err) => {
