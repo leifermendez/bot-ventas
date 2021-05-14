@@ -23,12 +23,11 @@
                 "message": [
                     "MSI Laptop Creator 17 A10SGS-252 \n",
                     "Intel Core i7 10th Gen 10875H (2.30 GHz) 32 GB Memory 2 TB \n",
-                    " NVMe SSD NVIDIA GeForce RTX 2080 Super Max-Q 17.3 \n"
+                    " NVMe SSD NVIDIA GeForce RTX 2080 Super Max-Q 17.3 \n",
+                    "*Precio $3,468.00*"
                 ],
                 "image": "laptop-1.jpg",
-                "opt": 1,
-                "external_category_id": 9,
-                "external_product_id": 15
+                "opt": 1
             },
             {
                 "message": [
@@ -38,9 +37,7 @@
                     "*Precio $719.97*"
                 ],
                 "image": "laptop-2.jpg",
-                "opt": 2,
-                "external_category_id": 10,
-                "external_product_id": 16
+                "opt": 2
             }
         ]
     },

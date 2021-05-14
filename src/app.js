@@ -12,13 +12,14 @@ const qrcode = require('qrcode-terminal');
 const qr = require('qr-image');
 const { Client, MessageMedia } = require('whatsapp-web.js');
 const mail = require('./mail')
-const flow = require('./flow/steps.json')
-const messages = require('./flow/messages.json')
-const vendors = require('./flow/vendor.json')
-const products = require('./flow/products.json')
+const api = require('./api')
+const flow = require('../flow/steps.json')
+const messages = require('../flow/messages.json')
+const vendors = require('../flow/vendor.json')
+const products = require('../flow/products.json')
 const app = express();
 app.use(express.urlencoded({ extended: true }))
-const SESSION_FILE_PATH = './session.json';
+const SESSION_FILE_PATH = `${process.cwd()}/session.json`;
 let client;
 let sessionData;
 
@@ -251,7 +252,7 @@ const connectionReady = () => {
         if (step && step.includes('STEP_2_ITEM_')) {
 
             /**
-             * Buscar prodcuto en json
+             * Buscar prodcuto en json pasado en Numero de opción
              */
 
             let getItem = step.split('STEP_2_ITEM_')
@@ -266,15 +267,29 @@ const connectionReady = () => {
                 return
             }
 
-
             const findChild = productFind.list.find(a => parseInt(body) === a.opt)
 
+            /**
+             * Revisamos si estamos usando API externa o No
+             */
+            if (api.checkApi()) {
+                sendMessage(from, messages.STEP_2_4.join(''))
+            }
+
+            const dataExternal = await api.parseData(findChild);
+
+            /**
+             * Si no existe API continuamos con el flujo normal del JSON
+             */
+
             if (findChild) {
+
+                const textProducto = findChild.message.concat(dataExternal)
 
                 await sendMedia(
                     from,
                     findChild.image,
-                    findChild.message.join('')
+                    textProducto.join('')
                 )
 
                 sendMessage(from, messages.STEP_2_3.join(''))
