@@ -286,11 +286,25 @@ const connectionReady = () => {
 
                 const textProducto = findChild.message.concat(dataExternal)
 
+                const lastImage = findChild.image.pop();
+
+                if (findChild.image.length) {
+
+                    findChild.image.forEach((child) => {
+                        sendMedia(
+                            from,
+                            child
+                        )
+                    })
+
+                }
+
                 await sendMedia(
                     from,
-                    findChild.image,
+                    lastImage,
                     textProducto.join('')
                 )
+
 
                 sendMessage(from, messages.STEP_2_3.join(''))
 
