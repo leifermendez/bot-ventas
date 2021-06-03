@@ -19,6 +19,7 @@ const vendors = require('../flow/vendor.json')
 const products = require('../flow/products.json')
 const app = express();
 app.use(express.urlencoded({ extended: true }))
+app.use(express.json())
 const SESSION_FILE_PATH = `${process.cwd()}/session.json`;
 let client;
 let sessionData;
@@ -153,59 +154,7 @@ const connectionReady = () => {
              * Aqui damos la bienvenida
              */
 
-            console.log('STEP1', body);
-
             sendMessage(from, messages.STEP_1.join(''))
-            return
-        }
-
-        if (flow.STEP_2.includes(body)) {
-
-            /**
-             * Aqui respondemos los prodcutos
-            */
-            const step2 = messages.STEP_2.join('')
-
-            const parseLabel = Object.keys(products).map(o => {
-                return products[o]['label'];
-            }).join('')
-
-            sendMessage(from, step2)
-            sendMessage(from, parseLabel)
-            await readChat(from, body, 'STEP_2_1')
-            return
-        }
-
-        if (flow.STEP_3.includes(body)) {
-            /**
-             * Aqui respondemos los asesores
-            */
-            const step3 = messages.STEP_3.join('')
-            console.log(step3)
-            sendMessage(from, step3)
-            await readChat(from, body, 'STEP_3_1')
-            return
-        }
-
-        if (flow.STEP_4.includes(body)) {
-            /**
-             * Aqui respondemos gracias!
-            */
-            const step4 = messages.STEP_4.join('')
-            console.log(step4)
-            sendMessage(from, step4)
-            await readChat(from, body)
-            return
-        }
-
-        if (flow.STEP_5.includes(body)) {
-            /**
-             * Aqui comenzamos a pedir datos al usuario
-            */
-            const step5 = messages.STEP_5.join('')
-            console.log(step5)
-            sendMessage(from, step5)
-            await readChat(from, body, 'STEP_5_1')
             return
         }
 
@@ -215,203 +164,10 @@ const connectionReady = () => {
         /* Seguimos el flujo de los productos */
         if (step && step.includes('STEP_2_1')) {
 
-            /**
-             * Buscar prodcuto en json
-             */
-            const insideText = body.toLowerCase();
-            const productFind = products[insideText] || null;
-
-            if (productFind) {
-
-                const getAllitems = productFind.main_images;
-
-                const listQueue = getAllitems.map(itemSend => {
-                    return sendMedia(
-                        from,
-                        itemSend.image,
-                        itemSend.message.join('')
-                    )
-                })
-
-                Promise.all(listQueue).then(() => {
-                    sendMessage(from, productFind.main_message.join(''))
-                })
-
-                const stepProduct = `STEP_2_ITEM_${insideText}`.toUpperCase();
-                await readChat(from, body, stepProduct)
-
-            } else {
-                sendMessage(from, messages.STEP_2_1.join(''))
-                await readChat(from, body, 'STEP_2_1')
-            }
-            return
-        }
-
-        /** Seguimos mostrandole mas imagenes del producto */
-
-        if (step && step.includes('STEP_2_ITEM_')) {
-
-            /**
-             * Buscar prodcuto en json pasado en Numero de opción
-             */
-
-            let getItem = step.split('STEP_2_ITEM_')
-            getItem = getItem.reverse()[0] || null
-
-            const nameItem = getItem.toLowerCase();
-            const productFind = products[nameItem] || null;
-
-            if (isNaN(parseInt(body))) {
-                sendMessage(from, messages.STEP_2_1.join(''))
-                await readChat(from, body)
-                return
-            }
-
-            const findChild = productFind.list.find(a => parseInt(body) === a.opt)
-
-            /**
-             * Revisamos si estamos usando API externa o No
-             */
-            if (api.checkApi()) {
-                sendMessage(from, messages.STEP_2_4.join(''))
-            }
-
-            const dataExternal = await api.parseData(findChild);
-
-            /**
-             * Si no existe API continuamos con el flujo normal del JSON
-             */
-
-            if (findChild) {
-
-                const textProducto = findChild.message.concat(dataExternal)
-
-                const lastImage = findChild.image.pop();
-
-                if (findChild.image.length) {
-
-                    findChild.image.forEach((child) => {
-                        sendMedia(
-                            from,
-                            child
-                        )
-                    })
-
-                }
-
-                await sendMedia(
-                    from,
-                    lastImage,
-                    textProducto.join('')
-                )
-
-
-                sendMessage(from, messages.STEP_2_3.join(''))
-
-                await readChat(from, body)
-            } else {
-                sendMessage(from, messages.STEP_2_1.join(''))
-                await readChat(from, body)
-            }
-
-
-            return
-        }
-
-        /* Seguimos el flujo de los asesores */
-        if (step && step.includes('STEP_3_1')) {
-
-            /**
-             * Buscar asesor en json
-             */
-            const insideText = body.toLowerCase();
-            const vendorFind = vendors[insideText] || null;
-
-            if (vendorFind) {
-                sendMessage(from, vendorFind.join(''))
-                await readChat(from, body, 'STEP_4')
-            } else {
-                sendMessage(from, messages.STEP_3_1.join(''))
-                await readChat(from, body)
-            }
-            return
-        }
-
-        /** Seguimos flujo de pedir datos */
-        if (step && step.includes('STEP_5_1')) {
-
-            const step5_1 = messages.STEP_5_1.join('')
-            console.log(step5_1)
-            sendMessage(from, step5_1)
-            await readChat(from, body, 'STEP_5_2')
-            return
-        }
-
-        /** Seguimos flujo de pedir datos el municipio */
-        if (step && step.includes('STEP_5_2')) {
-
-            const step5_2 = messages.STEP_5_2.join('')
-            console.log(step5_2)
-            sendMessage(from, step5_2)
-            await readChat(from, body, 'STEP_5_3')
-            return
-        }
-
-        /** Seguimos flujo de pedir asesor el municipio */
-        if (step && step.includes('STEP_5_3')) {
-
-            const step5_3 = messages.STEP_5_3.join('')
-            console.log(step5_3)
-            sendMessage(from, step5_3)
-            await readChat(from, body, 'STEP_5_4')
-            return
-        }
-
-        /* Seguimos el flujo de los asesores */
-        if (step && step.includes('STEP_5_4')) {
-
-            const step5_4 = messages.STEP_5_4.join('')
-            const step5_5 = messages.STEP_5_5.join('')
-            let messageStep5_4 = step5_4;
-            const userName = await handleExcel(from, 'STEP_5_2');
-            const userProduct = await handleExcel(from, 'STEP_5_3');
-            const userMethodPay = await handleExcel(from, 'STEP_5_4');
-
-            messageStep5_4 = messageStep5_4.replace('%NAME%', userName.value || '')
-            messageStep5_4 = messageStep5_4.replace('%LOCATION%', body || '')
-            messageStep5_4 = messageStep5_4.replace('%PRODUCT%', userProduct.value || '')
-            messageStep5_4 = messageStep5_4.replace('%METHOD%', userMethodPay.value || '')
-
-            sendMessage(from, messageStep5_4)
-            sendMessage(from, step5_5)
-            await readChat(from, body, 'STEP_5_5')
-            return
-        }
-
-        if (step && step.includes('STEP_5_5')) {
-            if (flow.STEP_5_5.includes(body)) {
-                const step5_6 = messages.STEP_5_6.join('')
-                sendMessage(from, step5_6)
-
-                const step5_7 = messages.STEP_5_7.join('')
-                let messageStep5_7 = step5_7;
-                const userName = await handleExcel(from, 'STEP_5_2');
-                const userLocation = await handleExcel(from, 'STEP_5_5');
-                const userProduct = await handleExcel(from, 'STEP_5_3');
-                const userMethodPay = await handleExcel(from, 'STEP_5_4');
-
-                messageStep5_7 = messageStep5_7.replace('%NAME%', userName.value)
-                messageStep5_7 = messageStep5_7.replace('%LOCATION%', userLocation.value)
-                messageStep5_7 = messageStep5_7.replace('%PRODUCT%', userProduct.value)
-                messageStep5_7 = messageStep5_7.replace('%METHOD%', userMethodPay.value)
-                messageStep5_7 = messageStep5_7.replace('%USERPHONE%', clearNumber(from))
-
-                mail.sendMail(messageStep5_7)
-                await readChat(from, body)
-            } else {
-                sendMessage(from, messages.ERROR.join(''))
-                await readChat(from, body)
-            }
+            const step2_1 = messages.STEP_2_1.join('')
+            console.log(step2_1)
+            sendMessage(from, step2_1)
+            await readChat(from, body)
             return
         }
 
@@ -509,53 +265,13 @@ const generateImage = (base64) => {
     console.log('http://localhost:9000/qr');
 }
 
-const handleExcel = (number, step = null) => new Promise((resolve, reject) => {
 
-    const proccessChild = (row) => new Promise((resolve) => {
-        const stepFind = row.values[3] || null;
-        resolve({
-            value: row.values[2] || null,
-            step: stepFind
-        })
-    })
-
-    let rowsList = [];
-    setTimeout(() => {
-        number = number.replace('@c.us', '');
-        number = `${number}@c.us`
-        const pathExcel = `./chats/${number}.xlsx`;
-        const workbook = new ExcelJS.Workbook();
-        if (fs.existsSync(pathExcel)) {
-            /**
-             * Si existe el archivo de conversacion lo actualizamos
-             */
-
-            workbook.xlsx.readFile(pathExcel)
-                .then(() => {
-                    const worksheet = workbook.getWorksheet(1);
-                    worksheet.eachRow((row) => rowsList.push(proccessChild(row)));
-                    Promise.all(rowsList).then((listPromise) => {
-                        const listRev = listPromise.reverse();
-                        if (step) {
-                            const findStep = listRev.find((o) => o.step === step);
-                            resolve(findStep);
-                        } else {
-                            reject('error')
-                        }
-
-                    })
-                    resolve;
-
-                })
-                .catch((err) => {
-                    console.log('ERR', err);
-                    reject('error')
-                })
-        }
-
-    }, 150)
-});
-
+const sendMessageApi = (req, res) => {
+    const { message, to } = req.body;
+    const numberTo = clearNumber(to)
+    sendMessage(numberTo, message)
+    res.send({ status: 'success' })
+}
 
 /**
  * Revisamos si existe archivo con credenciales!
@@ -568,6 +284,10 @@ app.get('/qr', (req, res) => {
     res.writeHead(200, { 'content-type': 'image/svg+xml' });
     fs.createReadStream(`./qr-code.svg`).pipe(res);
 })
+
+
+/** EndPoint */
+app.post('/send-message', sendMessageApi)
 
 app.listen(9000, () => {
     console.log('Server ready!');
