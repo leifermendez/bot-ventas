@@ -5,8 +5,6 @@ require('dotenv').config()
 const fs = require('fs');
 const express = require('express');
 const moment = require('moment');
-const ora = require('ora');
-const chalk = require('chalk');
 const ExcelJS = require('exceljs');
 const qrcode = require('qrcode-terminal');
 const qr = require('qr-image');
@@ -45,7 +43,7 @@ const sendMessage = (number = null, text = null) => new Promise((resolve, reject
     number = `${number}@c.us`
     const message = text;
     const msg = client.sendMessage(number, message);
-    console.log(`${chalk.red('⚡⚡⚡ Enviando mensajes....')}`);
+    console.log(`⚡⚡⚡ Enviando mensajes....`);
     resolve(msg)
 })
 
@@ -64,9 +62,8 @@ const clearNumber = (number) => {
  * este paso evita volver a escanear el QRCODE
  */
 const withSession = () => {
-    const spinner = ora(`Cargando ${chalk.yellow('Validando session con Whatsapp...')}`);
+    console.log(`Validando session con Whatsapp...`);
     sessionData = require(SESSION_FILE_PATH);
-    spinner.start();
     client = new Client({
         session: sessionData,
         puppeteer: {
@@ -78,7 +75,6 @@ const withSession = () => {
 
     client.on('ready', () => {
         console.log('Client is ready!');
-        spinner.stop();
         connectionReady();
 
     });
@@ -86,7 +82,6 @@ const withSession = () => {
 
 
     client.on('auth_failure', () => {
-        spinner.stop();
         console.log('** Error de autentificacion vuelve a generar el QRCODE (Debes Borrar el archivo session.json) **');
     })
 
@@ -99,7 +94,7 @@ const withSession = () => {
  */
 const withOutSession = () => {
 
-    console.log(`${chalk.greenBright('🔴🔴 No tenemos session guardada, espera que se generar el QR CODE 🔴🔴')}`);
+    console.log(`🔴🔴 No tenemos session guardada, espera que se generar el QR CODE 🔴🔴`);
 
     client = new Client({
         puppeteer: {
@@ -126,7 +121,7 @@ const withOutSession = () => {
     client.on('authenticated', (session) => {
         // Guardamos credenciales de de session para usar luego
         sessionData = session;
-        fs.writeFile(SESSION_FILE_PATH, JSON.stringify(session), function (err) {
+        fs.writeFile(SESSION_FILE_PATH, JSON.stringify(session), function(err) {
             if (err) {
                 console.log(err);
             }
@@ -163,7 +158,7 @@ const connectionReady = () => {
 
             /**
              * Aqui respondemos los prodcutos
-            */
+             */
             const step2 = messages.STEP_2.join('')
 
             const parseLabel = Object.keys(products).map(o => {
@@ -179,7 +174,7 @@ const connectionReady = () => {
         if (flow.STEP_3.includes(body)) {
             /**
              * Aqui respondemos los asesores
-            */
+             */
             const step3 = messages.STEP_3.join('')
             console.log(step3)
             sendMessage(from, step3)
@@ -190,7 +185,7 @@ const connectionReady = () => {
         if (flow.STEP_4.includes(body)) {
             /**
              * Aqui respondemos gracias!
-            */
+             */
             const step4 = messages.STEP_4.join('')
             console.log(step4)
             sendMessage(from, step4)
@@ -201,7 +196,7 @@ const connectionReady = () => {
         if (flow.STEP_5.includes(body)) {
             /**
              * Aqui comenzamos a pedir datos al usuario
-            */
+             */
             const step5 = messages.STEP_5.join('')
             console.log(step5)
             sendMessage(from, step5)
@@ -504,8 +499,8 @@ const readChat = (number, message, step = null) => new Promise((resolve, reject)
 const generateImage = (base64) => {
     let qr_svg = qr.image(base64, { type: 'svg', margin: 4 });
     qr_svg.pipe(require('fs').createWriteStream('qr-code.svg'));
-    console.log(`${chalk.blueBright('⚡ Recuerda que el QR se actualiza cada minuto ⚡')}`);
-    console.log(`${chalk.blueBright('⚡ Actualiza F5 el navegador para mantener el mejor QR⚡')}`);
+    console.log(`⚡ Recuerda que el QR se actualiza cada minuto ⚡'`);
+    console.log(`⚡ Actualiza F5 el navegador para mantener el mejor QR⚡`);
     console.log('http://localhost:9000/qr');
 }
 
@@ -560,7 +555,7 @@ const handleExcel = (number, step = null) => new Promise((resolve, reject) => {
 /**
  * Revisamos si existe archivo con credenciales!
  */
-(fs.existsSync(SESSION_FILE_PATH)) ? withSession() : withOutSession();
+(fs.existsSync(SESSION_FILE_PATH)) ? withSession(): withOutSession();
 
 /** QR Link */
 
